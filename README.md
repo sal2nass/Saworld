@@ -1,4 +1,4 @@
-# منصة الدروس العلمية
+# منصة طالب العلم
 
 منصة عربية (RTL) لشرح المتون العلمية مسألة-بمسألة:
 - الفقه: **عمدة الفقه** بشرح الشيخ صالح الفوزان
@@ -14,7 +14,7 @@
 ```bash
 git init
 git add .
-git commit -m "منصة الدروس العلمية: عمدة الفقه + التوحيد + الآجرومية"
+git commit -m "منصة طالب العلم: عمدة الفقه + التوحيد + الآجرومية"
 git branch -M main
 git remote add origin https://github.com/USERNAME/REPO.git
 git push -u origin main
