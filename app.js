@@ -186,6 +186,7 @@ function openPopup(id){
 }
 function closePopup(){ $("#sharhModal").classList.add("hidden"); document.body.style.overflow = ""; }
 $("#modalClose").onclick = closePopup;
+$("#modalCloseBottom").onclick = closePopup;
 $("#sharhModal").addEventListener("click", e=>{ if(e.target.id==="sharhModal") closePopup(); });
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") closePopup(); });
 function renderPages0(){ // تحديث التظليل والتقدم دون إعادة بناء البحث
