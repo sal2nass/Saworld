@@ -8,19 +8,10 @@
 ## التشغيل محليًا
 افتح `index.html` مباشرة في المتصفح.
 
-## النشر على GitHub Pages
-1. أنشئ مستودعًا جديدًا على GitHub (عام).
-2. من داخل هذا المجلد:
-```bash
-git init
-git add .
-git commit -m "منصة طالب العلم: عمدة الفقه + التوحيد + الآجرومية"
-git branch -M main
-git remote add origin https://github.com/USERNAME/REPO.git
-git push -u origin main
-```
-3. في GitHub: Settings → Pages → Deploy from branch → `main` / `/ (root)` → Save.
-4. الرابط سيكون: `https://USERNAME.github.io/REPO/`
+## النشر على GitHub Pages (يُنشر من مجلد `docs`)
+1. ادفع فرع `main` إلى المستودع.
+2. في GitHub: Settings → Pages → Deploy from branch → `main` / `/docs` → Save.
+3. الرابط سيكون: `https://sal2nass.github.io/Sim_Center/`
 
 ## المراجع
 آخر الطبعات، مقابلة على المكتبة الشاملة ومنصة تراث (التفاصيل في تذييل الموقع).
