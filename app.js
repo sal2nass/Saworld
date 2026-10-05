@@ -223,3 +223,160 @@ $("#resumeBtn").onclick=()=>{
   $("#themeBtn").textContent=document.documentElement.dataset.theme==="dark"?"☀️ نهاري":"🌙 ليلي";
   renderSections(); updateResume();
 })();
+
+// ============ الاختبار والمراجعة (تُبنى الأسئلة من نصوص الكتب فقط) ============
+function availBooks(){
+  const out = [];
+  for(const sec of SECTIONS){
+    for(const b of (BOOKS[sec.id]||[])){
+      if(b.ok) out.push({book:b.t, section:sec.name});
+    }
+  }
+  return out;
+}
+function fillBookSelect(sel, info, from, to){
+  const books = availBooks();
+  sel.innerHTML = books.map(b=>`<option value="${b.book}">${b.book} (${b.section})</option>`).join("");
+  const upd = ()=>{
+    const D = bookData(sel.value);
+    info.textContent = `عدد صفحات القراءة في هذا الكتاب: ${D.pages.length} صفحة`;
+    from.max = D.pages.length; to.max = D.pages.length;
+    from.value = 1; to.value = Math.min(3, D.pages.length);
+  };
+  sel.onchange = upd; upd();
+}
+$("#quizBtn").onclick = ()=>{ fillBookSelect($("#qBook"), $("#qPagesInfo"), $("#qFrom"), $("#qTo")); go("view-quiz-setup"); };
+$("#reviewBtn").onclick = ()=>{ fillBookSelect($("#rBook"), $("#rPagesInfo"), $("#rFrom"), $("#rTo")); go("view-review-setup"); };
+
+// توليد الأسئلة من النصوص فقط: لا يُؤلَّف أي نص جديد
+function norm(s){ return (s||"").replace(/\s+/g," ").trim(); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function excerpt(t, n){ t = norm(t); return t.length>n ? t.slice(0,n)+"…" : t; }
+function blankWord(matn){
+  const words = norm(matn).split(" ").filter(w=>w.length>=4);
+  if(!words.length) return null;
+  const w = words.reduce((a,b)=>b.length>=a.length?b:a, words[0]);
+  return { q: norm(matn).replace(w, "……"), a: w };
+}
+function buildQuiz(book, from, to, type, perPage){
+  const D = bookData(book);
+  const pages = D.pages.filter(p=>p.id>=from && p.id<=to);
+  const pool = D.flat.map(m=>m.matn);
+  const list = [];
+  const kinds = type==="mcq" ? ["mcq","tf"] : type==="essay" ? ["write","complete"] : ["mcq","tf","complete","write"];
+  let k = 0;
+  for(const p of pages){
+    for(const m of p.masael.slice(0, perPage)){
+      const kind = kinds[k++ % kinds.length];
+      if(kind==="mcq"){
+        const others = shuffle(pool.filter(t=>t!==m.matn)).slice(0,3);
+        list.push({ kind, bab:m.bab, id:m.id,
+          prompt:`أيُّ مما يلي هو نصُّ المسألة رقم ${m.id} في «${m.bab}»؟`,
+          options: shuffle([m.matn, ...others]).map(t=>excerpt(t,160)),
+          answer: excerpt(m.matn,160) });
+      } else if(kind==="tf"){
+        const truth = Math.random()<0.5;
+        const stmt = truth ? m.matn : shuffle(pool.filter(t=>t!==m.matn))[0];
+        list.push({ kind, bab:m.bab, id:m.id,
+          prompt:`قال المتن في المسألة رقم ${m.id} من «${m.bab}»: «${stmt}» — صح أم خطأ؟`,
+          options:["صح","خطأ"], answer: truth?"صح":"خطأ" });
+      } else if(kind==="complete"){
+        const b = blankWord(m.matn);
+        if(!b) continue;
+        list.push({ kind, bab:m.bab, id:m.id,
+          prompt:`أكمل المسألة رقم ${m.id} من «${m.bab}» بكتابة الكلمة الناقصة (مطابقة حرفية): «${b.q}»`,
+          answer: b.a });
+      } else {
+        list.push({ kind, bab:m.bab, id:m.id,
+          prompt:`اكتب نصَّ المسألة رقم ${m.id} من «${m.bab}» كاملًا من حفظك (التصحيح حرفي):`,
+          answer: norm(m.matn) });
+      }
+    }
+  }
+  return list.slice(0, 30);
+}
+let QZ = { list:[], idx:0, score:0, locked:false };
+function qChoice(v){ return document.querySelector(`input[name="${v}"]:checked`).value; }
+$("#qStart").onclick = ()=>{
+  const book = $("#qBook").value;
+  const D = bookData(book);
+  let from = Math.max(1, +$("#qFrom").value||1);
+  let to = Math.min(D.pages.length, +$("#qTo").value||1);
+  if(from>to) [from,to]=[to,from];
+  const list = buildQuiz(book, from, to, qChoice("qtype"), +qChoice("qper"));
+  if(!list.length){ alert("لا توجد مسائل في هذا النطاق."); return; }
+  QZ = { list, idx:0, score:0, locked:false, book };
+  go("view-quiz-run"); renderQ();
+};
+function renderQ(){
+  const total = QZ.list.length;
+  $("#qProgText").textContent = `السؤال ${Math.min(QZ.idx+1,total)} من ${total} — الدرجة: ${QZ.score}`;
+  $("#qProgBar").style.width = (QZ.idx/total*100)+"%";
+  if(QZ.idx>=total){
+    const pct = Math.round(QZ.score/total*100);
+    $("#qProgBar").style.width = "100%";
+    $("#qCard").innerHTML = `<div class="q-result"><div class="q-score">${QZ.score} / ${total}</div><p>النسبة: ${pct}% — ${pct>=80?"ممتاز":pct>=60?"جيد":"يحتاج مراجعة"}</p><button class="mode-btn" onclick="go('view-quiz-setup')">اختبار جديد</button></div>`;
+    return;
+  }
+  QZ.locked = false;
+  const q = QZ.list[QZ.idx];
+  let body = `<div class="q-stem">${q.prompt}</div>`;
+  if(q.kind==="mcq"||q.kind==="tf"){
+    body += q.options.map((o,i)=>`<button class="q-opt" data-o="${i}">${o}</button>`).join("");
+  } else if(q.kind==="complete"){
+    body += `<input id="qAns" class="q-input" autocomplete="off" placeholder="اكتب الكلمة الناقصة هنا">`;
+  } else {
+    body += `<textarea id="qAns" class="q-input" rows="4" placeholder="اكتب نص المسألة هنا"></textarea>`;
+  }
+  body += `<div class="q-actions"><button id="qCheck" class="mode-btn">تحقق</button></div><div id="qFeed"></div>`;
+  $("#qCard").innerHTML = body;
+  document.querySelectorAll(".q-opt").forEach(b=>b.onclick=()=>{ clearSel(); b.classList.add("sel"); });
+  $("#qCheck").onclick = checkQ;
+}
+function clearSel(){ document.querySelectorAll(".q-opt").forEach(b=>b.classList.remove("sel")); }
+function checkQ(){
+  if(QZ.locked) return;
+  const q = QZ.list[QZ.idx];
+  let given = "", ok = false;
+  if(q.kind==="mcq"||q.kind==="tf"){
+    const s = document.querySelector(".q-opt.sel");
+    if(!s){ alert("اختر إجابة أولًا."); return; }
+    given = s.textContent; ok = (norm(given)===norm(q.answer));
+    document.querySelectorAll(".q-opt").forEach(b=>{
+      if(norm(b.textContent)===norm(q.answer)) b.classList.add("good");
+      else if(b.classList.contains("sel")) b.classList.add("bad");
+    });
+  } else {
+    given = norm($("#qAns").value);
+    ok = (given===norm(q.answer));
+  }
+  QZ.locked = true;
+  if(ok) QZ.score++;
+  $("#qProgText").textContent = `السؤال ${QZ.idx+1} من ${QZ.list.length} — الدرجة: ${QZ.score}`;
+  $("#qFeed").innerHTML = `<div class="q-feed ${ok?"good":"bad"}">${ok?"إجابة صحيحة":"إجابة خاطئة — الصواب: «"+q.answer+"»"}</div><button class="mode-btn" id="qNext">${QZ.idx+1>=QZ.list.length?"عرض النتيجة":"السؤال التالي"}</button>`;
+  $("#qNext").onclick = ()=>{ QZ.idx++; renderQ(); };
+}
+$("#qQuit").onclick = ()=>go("view-sections");
+
+// المراجعة السريعة: تقليب صفحات المتن فقط بلا شروح
+let RV = { pages:[], idx:0 };
+$("#rStart").onclick = ()=>{
+  const book = $("#rBook").value;
+  const D = bookData(book);
+  let from = Math.max(1, +$("#rFrom").value||1);
+  let to = Math.min(D.pages.length, +$("#rTo").value||1);
+  if(from>to) [from,to]=[to,from];
+  const pages = D.pages.filter(p=>p.id>=from && p.id<=to);
+  if(!pages.length){ alert("لا توجد صفحات في هذا النطاق."); return; }
+  RV = { pages, idx:0, book };
+  go("view-review-run"); renderR();
+};
+function renderR(){
+  const n = RV.pages.length;
+  const p = RV.pages[RV.idx];
+  $("#rInfo").textContent = `صفحة ${RV.idx+1} / ${n} — ${RV.book}`;
+  $("#rPage").innerHTML = `<div class="page"><h3>${p.bab}</h3>${p.masael.map(m=>`<div class="masala static"><span class="m-num">مسألة ${m.id}</span>${m.matn}</div>`).join("")}</div>`;
+  window.scrollTo({top:0});
+}
+$("#rPrev").onclick = ()=>{ if(RV.idx>0){ RV.idx--; renderR(); } };
+$("#rNext").onclick = ()=>{ if(RV.idx<RV.pages.length-1){ RV.idx++; renderR(); } };

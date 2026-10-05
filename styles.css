@@ -65,6 +65,39 @@ main{max-width:1150px;margin:auto;padding:18px}
 .modal-close-bottom{display:block;width:100%;margin-top:14px;min-height:48px;border-radius:12px;border:1.5px solid var(--brand);background:var(--card);color:var(--ink);font-family:inherit;font-size:1.05rem;font-weight:800;cursor:pointer}
 .modal-close-bottom:hover{background:var(--brand);color:#fff}
 .masala{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:pan-y manipulation}
+.masala.static{cursor:default}
+/* أزرار الاختبار والمراجعة */
+.mode-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.mode-btn{background:var(--brand);color:#fff;border:none;border-radius:12px;padding:10px 26px;font-family:inherit;font-size:1.05rem;font-weight:800;cursor:pointer;min-height:48px}
+.mode-btn:hover{filter:brightness(1.1)}
+.mode-btn.alt{background:var(--brand2);color:#222}
+.form-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);max-width:640px;display:flex;flex-direction:column;gap:12px}
+.form-card select,.form-card input[type=number]{padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font-family:inherit;font-size:1rem;min-height:44px}
+.range-row{display:flex;gap:12px;flex-wrap:wrap}
+.form-card fieldset{border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;gap:14px;flex-wrap:wrap}
+.form-card legend{padding:0 8px;font-weight:800;color:var(--brand)}
+.form-card fieldset label{display:flex;align-items:center;gap:6px;cursor:pointer}
+/* بطاقة السؤال */
+.q-progress{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:8px 0}
+#qProgBar{height:100%;width:0;background:linear-gradient(90deg,var(--brand),var(--brand2))}
+.q-stem{background:var(--matn);border-right:4px solid var(--brand);border-radius:10px;padding:12px 14px;margin:12px 0;font-size:1.1rem;font-family:"Amiri",serif}
+.q-opt{display:block;width:100%;text-align:right;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0;font-family:inherit;font-size:1rem;color:var(--ink);cursor:pointer}
+.q-opt:hover{border-color:var(--brand)}
+.q-opt.sel{outline:2px solid var(--brand2)}
+.q-opt.good{background:#e6f7ec;border-color:#1d9e4b;color:#0c3}
+.q-opt.bad{background:#fdecec;border-color:#d33}
+[data-theme="dark"] .q-opt.good{background:#12351f;color:#7dffa8}
+[data-theme="dark"] .q-opt.bad{background:#3d1515;color:#ff9a9a}
+.q-input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:1.05rem;background:var(--bg);color:var(--ink);margin:8px 0}
+.q-actions{margin-top:10px}
+.q-feed{border-radius:10px;padding:10px 14px;margin:10px 0;font-weight:700}
+.q-feed.good{background:#e6f7ec;color:#0a6b2e}
+.q-feed.bad{background:#fdecec;color:#a11}
+[data-theme="dark"] .q-feed.good{background:#12351f;color:#7dffa8}
+[data-theme="dark"] .q-feed.bad{background:#3d1515;color:#ff9a9a}
+#qFeed .mode-btn{margin-top:8px}
+.q-result{text-align:center;padding:24px}
+.q-score{font-size:2.6rem;font-weight:800;color:var(--brand)}
 .dalil-box,.faida-box{background:var(--sharh);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px;font-size:.95rem}
 .sharh-nav{display:flex;justify-content:space-between;margin-top:12px}
 .sharh-empty{text-align:center;color:var(--muted)}.sharh-empty .big{font-size:2.4rem}

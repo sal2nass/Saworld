@@ -33,6 +33,10 @@
 <main id="app">
   <!-- Step 1: الأقسام -->
   <section id="view-sections" class="view active">
+    <div class="mode-row">
+      <button id="quizBtn" class="mode-btn">اختبار</button>
+      <button id="reviewBtn" class="mode-btn alt">مراجعة سريعة</button>
+    </div>
     <h2>اختر القسم العلمي</h2>
     <p class="muted">اختر الفن الذي تريد دراسته، ثم اختر الكتاب، ثم الشرح.</p>
     <div class="grid" id="sectionsGrid"></div>
@@ -94,6 +98,69 @@
     <button class="modal-close-bottom" id="modalCloseBottom">إغلاق النافذة والعودة للقراءة</button>
   </div>
 </div>
+
+  <!-- إعداد الاختبار -->
+  <section id="view-quiz-setup" class="view">
+    <button class="back" data-go="view-sections">→ رجوع للرئيسية</button>
+    <h2>إعداد الاختبار</h2>
+    <div class="form-card">
+      <label>الكتاب:
+        <select id="qBook"></select>
+      </label>
+      <p class="muted" id="qPagesInfo"></p>
+      <div class="range-row">
+        <label>من صفحة: <input id="qFrom" type="number" min="1" value="1"></label>
+        <label>إلى صفحة: <input id="qTo" type="number" min="1" value="1"></label>
+      </div>
+      <fieldset><legend>نوع الأسئلة</legend>
+        <label><input type="radio" name="qtype" value="mcq" checked> خيارات (اختر + صح/خطأ)</label>
+        <label><input type="radio" name="qtype" value="essay"> مقالية (اكتب + أكمل — تصحيح حرفي)</label>
+        <label><input type="radio" name="qtype" value="mixed"> مختلط</label>
+      </fieldset>
+      <fieldset><legend>عدد الأسئلة لكل صفحة (حد أقصى 3)</legend>
+        <label><input type="radio" name="qper" value="1" checked> سؤال</label>
+        <label><input type="radio" name="qper" value="2"> سؤالان</label>
+        <label><input type="radio" name="qper" value="3"> ثلاثة</label>
+      </fieldset>
+      <button id="qStart" class="mode-btn">ابدأ الاختبار</button>
+    </div>
+  </section>
+
+  <!-- تنفيذ الاختبار -->
+  <section id="view-quiz-run" class="view">
+    <button class="back" id="qQuit">→ إنهاء الاختبار</button>
+    <div class="q-progress"><div id="qProgBar"></div></div>
+    <p class="muted" id="qProgText"></p>
+    <div id="qCard"></div>
+  </section>
+
+  <!-- إعداد المراجعة -->
+  <section id="view-review-setup" class="view">
+    <button class="back" data-go="view-sections">→ رجوع للرئيسية</button>
+    <h2>المراجعة السريعة (المتن فقط)</h2>
+    <div class="form-card">
+      <label>الكتاب:
+        <select id="rBook"></select>
+      </label>
+      <p class="muted" id="rPagesInfo"></p>
+      <div class="range-row">
+        <label>من صفحة: <input id="rFrom" type="number" min="1" value="1"></label>
+        <label>إلى صفحة: <input id="rTo" type="number" min="1" value="1"></label>
+      </div>
+      <button id="rStart" class="mode-btn alt">ابدأ المراجعة</button>
+    </div>
+  </section>
+
+  <!-- تنفيذ المراجعة -->
+  <section id="view-review-run" class="view">
+    <button class="back" data-go="view-review-setup">→ تغيير النطاق</button>
+    <div class="pages-nav">
+      <button id="rPrev">السابق</button>
+      <span id="rInfo"></span>
+      <button id="rNext">التالي</button>
+    </div>
+    <div id="rPage"></div>
+  </section>
 
   <footer class="refs">
     <p class="muted">التقدم والتكبير ووضع الليل يُحفظ تلقائيًا في جهازك (LocalStorage) لمتابعة آخر ما وقفت عنده.</p>
