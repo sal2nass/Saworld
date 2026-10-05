@@ -1,17 +1,19 @@
 // منطق المنصة: أقسام -> كتب -> شروح -> قراءة صفحات + شرح المسألة + تكبير + دارك + متابعة
 const SECTIONS = [
-  { id:"aqida", name:"العقيدة", icon:"🕌", desc:"التوحيد والإيمان والأسماء والصفات" },
-  { id:"nahw", name:"النحو", icon:"✍️", desc:"قواعد الإعراب وبناء الجملة" },
-  { id:"sarf", name:"الصرف", icon:"🔤", desc:"أبنية الكلمات وتصريف الأفعال" },
-  { id:"fiqh", name:"الفقه", icon:"⚖️", desc:"أحكام العبادات والمعاملات — ابدأ بعمدة الفقه" },
-  { id:"faraid", name:"الفرائض", icon:"🧮", desc:"علم المواريث وقسمة التركات" },
+  { id:"aqida", name:"العقيدة", mark:"ع", desc:"التوحيد والإيمان والأسماء والصفات" },
+  { id:"hadith", name:"الحديث", mark:"ح", desc:"أحاديث الأحكام — ابدأ بعمدة الأحكام" },
+  { id:"nahw", name:"النحو", mark:"ن", desc:"قواعد الإعراب وبناء الجملة" },
+  { id:"sarf", name:"الصرف", mark:"ص", desc:"أبنية الكلمات وتصريف الأفعال" },
+  { id:"fiqh", name:"الفقه", mark:"ف", desc:"أحكام العبادات والمعاملات" },
+  { id:"faraid", name:"الفرائض", mark:"م", desc:"علم المواريث وقسمة التركات" },
 ];
 const BOOKS = {
   aqida: [{t:"كتاب التوحيد", ok:true, desc:"للإمام محمد بن عبد الوهاب — كاملًا (66 بابًا) بفتح المجيد"},{t:"الأصول الثلاثة", ok:false},{t:"العقيدة الواسطية", ok:false}],
+  hadith: [{t:"عمدة الأحكام", ok:true, desc:"لعبد الغني المقدسي — أحاديث الطهارة بشرح البسام"},{t:"بلوغ المرام", ok:false},{t:"الأربعون النووية", ok:false}],
   nahw: [{t:"الآجرومية", ok:true, desc:"لابن آجروم — بشرح الشيخ العثيمين للمبتدئين (متاح الآن)"},{t:"قطر الندى", ok:false}],
   sarf: [{t:"نظم المقصود", ok:false},{t:"شذا العرف", ok:false}],
-  fiqh: [{t:"عمدة الفقه", ok:true, desc:"لابن قدامة — كتاب الطهارة والصلاة (متاح الآن)"},{t:"زاد المستقنع", ok:false},{t:"دليل الطالب", ok:false}],
-  faraid: [{t:"متن الرحبية", ok:false}],
+  fiqh: [{t:"عمدة الفقه", ok:true, desc:"لابن قدامة — كتاب الطهارة والصلاة (متاح الآن)"},{t:"زاد المستقنع", ok:true, desc:"للحجاوي — كتاب الطهارة بشرح ابن عثيمين (الشرح الممتع)"},{t:"دليل الطالب", ok:false}],
+  faraid: [{t:"متن الرحبية", ok:true, desc:"منظومة الرحبي في الفرائض — بشرح الشيخ عبد المحسن القاسم"}],
 };
 const SHURUH = {
   "عمدة الفقه": [
@@ -26,6 +28,15 @@ const SHURUH = {
   "الآجرومية": [
     {t:"شرح الشيخ محمد بن صالح العثيمين", ok:true, desc:"الأنسب للمبتدئ: عبارة سهلة وأمثلة متدرجة وتمارين"},
     {t:"شرح الكفراوي", ok:false},
+  ],
+  "متن الرحبية": [
+    {t:"شرح الشيخ عبد المحسن القاسم", ok:true, desc:"شرح ميسر على المنظومة — آخر الطبعات"},
+  ],
+  "زاد المستقنع": [
+    {t:"الشرح الممتع للشيخ ابن عثيمين", ok:true, desc:"أوسع شروح الزاد وأيسرها — آخر الطبعات"},
+  ],
+  "عمدة الأحكام": [
+    {t:"تيسير العلام للشيخ عبد الله البسام", ok:true, desc:"شرح مختصر مفيد على أحاديث الأحكام — آخر الطبعات"},
   ]
 };
 // سجل البيانات: اسم الكتاب -> كائن البيانات المحمّل من ملفات data/
@@ -33,11 +44,16 @@ function bookData(name){
   if(name==="عمدة الفقه") return window.UMDAT;
   if(name==="كتاب التوحيد") return window.TAWHID;
   if(name==="الآجرومية") return window.AJRUM;
+  if(name==="متن الرحبية") return window.RAHBI;
+  if(name==="زاد المستقنع") return window.ZAD;
+  if(name==="عمدة الأحكام") return window.AHKAM;
   return window.UMDAT;
 }
 function bookSection(name){
   if(name==="كتاب التوحيد") return "العقيدة";
+  if(name==="عمدة الأحكام") return "الحديث";
   if(name==="الآجرومية") return "النحو";
+  if(name==="متن الرحبية") return "الفرائض";
   return "الفقه";
 }
 
@@ -62,8 +78,8 @@ document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go)
 
 // أقسام
 function renderSections(){
-  const avail = {aqida:"متاح: كتاب التوحيد", nahw:"متاح: الآجرومية", fiqh:"متاح: عمدة الفقه"};
-  $("#sectionsGrid").innerHTML = SECTIONS.map(s=>`<div class="card" data-s="${s.id}"><div style="font-size:2rem">${s.icon}</div><h3>${s.name}</h3><p class="muted">${s.desc}</p><span class="tag">${avail[s.id]||"قريبًا"}</span></div>`).join("");
+  const avail = {aqida:"متاح: كتاب التوحيد", hadith:"متاح: عمدة الأحكام", nahw:"متاح: الآجرومية", fiqh:"متاح: عمدة الفقه + الزاد", faraid:"متاح: متن الرحبية"};
+  $("#sectionsGrid").innerHTML = SECTIONS.map(s=>`<div class="card" data-s="${s.id}"><div class="mark">${s.mark}</div><h3>${s.name}</h3><p class="muted">${s.desc}</p><span class="tag">${avail[s.id]||"قريبًا"}</span></div>`).join("");
   document.querySelectorAll("#sectionsGrid .card").forEach(c=>c.onclick=()=>{
     state.section=c.dataset.s; renderBooks(); go("view-books");
   });
@@ -75,7 +91,7 @@ function renderBooks(){
   $("#booksGrid").innerHTML = list.map(b=>`<div class="card ${b.ok?"":"disabled"}" data-b="${b.t}"><h3>${b.t}</h3><p class="muted">${b.desc||"سيُضاف لاحقًا ضمن خطة المنصة"}</p>${b.ok?'<span class="tag">ادخل</span>':'<span class="soon">قريبًا</span>'}</div>`).join("");
   document.querySelectorAll("#booksGrid .card").forEach(c=>c.onclick=()=>{
     const b=(BOOKS[state.section]||[]).find(x=>x.t===c.dataset.b);
-    if(!b||!b.ok){ alert("هذا الكتاب سيُضاف لاحقًا. المتاح الآن: عمدة الفقه، كتاب التوحيد، الآجرومية."); return; }
+    if(!b||!b.ok){ alert("هذا الكتاب سيُضاف لاحقًا. المتاح الآن: عمدة الفقه، الزاد، التوحيد، عمدة الأحكام، الآجرومية، الرحبية."); return; }
     state.book=b.t; renderShuruh(); go("view-shuruh");
   });
 }
@@ -175,7 +191,7 @@ function updateResume(){
 $("#resumeBtn").onclick=()=>{
   const s=load(); if(!s) return;
   state.book=s.book||"عمدة الفقه"; state.sharh=s.sharh||"شرح الشيخ صالح الفوزان";
-  state.section=s.section||(state.book==="كتاب التوحيد"?"aqida":state.book==="الآجرومية"?"nahw":"fiqh");
+  state.section=s.section||({ "كتاب التوحيد":"aqida", "عمدة الأحكام":"hadith", "الآجرومية":"nahw", "متن الرحبية":"faraid", "عمدة الفقه":"fiqh", "زاد المستقنع":"fiqh" }[state.book]||"fiqh");
   state.page=s.page||1; curBab="الكل";
   enterRead(); go("view-read");
   if(s.masala) openMasala(s.masala);

@@ -57,3 +57,21 @@ main{max-width:1150px;margin:auto;padding:18px}
 .sharh-nav{display:flex;justify-content:space-between;margin-top:12px}
 .sharh-empty{text-align:center;color:var(--muted)}.sharh-empty .big{font-size:2.4rem}
 footer.refs{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:.9rem}
+/* شارة الحرف بدل الإيموجي في بطاقات الأقسام */
+.mark{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand2));margin-bottom:6px}
+/* تحسينات الجوال */
+@media(max-width:600px){
+  .topbar{padding:10px 12px}
+  .brand h1{font-size:1.05rem}
+  .controls{width:100%;justify-content:space-between}
+  .controls button,.back,.pages-nav button,.sharh-nav button{min-height:44px;font-size:1rem}
+  main{padding:12px}
+  .grid{grid-template-columns:1fr 1fr;gap:10px}
+  .card{padding:14px}
+  .read-tools{width:100%}
+  .read-tools input,.read-tools select{flex:1;min-width:0;width:100%;font-size:1rem;min-height:44px}
+  .masala{font-size:1.12rem;padding:12px}
+  .page{padding:12px}
+  .sharh-col{padding:14px}
+  #sharhText{font-size:1.05rem}
+}
