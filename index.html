@@ -24,7 +24,6 @@
       <button id="zoomIn" aria-label="تكبير">أ+</button>
     </div>
     <button id="themeBtn" aria-label="دارك / لايت">🌙 ليلي</button>
-    <button id="resumeBtn" class="resume hidden">▶ متابعة من حيث توقفت</button>
   </div>
 </header>
 
@@ -35,7 +34,6 @@
   <section id="view-sections" class="view active">
     <div class="mode-row">
       <button id="quizBtn" class="mode-btn">اختبار</button>
-      <button id="reviewBtn" class="mode-btn alt">مراجعة سريعة</button>
     </div>
     <h2>اختر القسم العلمي</h2>
     <p class="muted">اختر الفن الذي تريد دراسته، ثم اختر الكتاب، ثم الشرح.</p>
@@ -132,34 +130,6 @@
     <div class="q-progress"><div id="qProgBar"></div></div>
     <p class="muted" id="qProgText"></p>
     <div id="qCard"></div>
-  </section>
-
-  <!-- إعداد المراجعة -->
-  <section id="view-review-setup" class="view">
-    <button class="back" data-go="view-sections">→ رجوع للرئيسية</button>
-    <h2>المراجعة السريعة (المتن فقط)</h2>
-    <div class="form-card">
-      <label>الكتاب:
-        <select id="rBook"></select>
-      </label>
-      <p class="muted" id="rPagesInfo"></p>
-      <div class="range-row">
-        <label>من صفحة: <input id="rFrom" type="number" min="1" value="1"></label>
-        <label>إلى صفحة: <input id="rTo" type="number" min="1" value="1"></label>
-      </div>
-      <button id="rStart" class="mode-btn alt">ابدأ المراجعة</button>
-    </div>
-  </section>
-
-  <!-- تنفيذ المراجعة -->
-  <section id="view-review-run" class="view">
-    <button class="back" data-go="view-review-setup">→ تغيير النطاق</button>
-    <div class="pages-nav">
-      <button id="rPrev">السابق</button>
-      <span id="rInfo"></span>
-      <button id="rNext">التالي</button>
-    </div>
-    <div id="rPage"></div>
   </section>
 
   <footer class="refs">

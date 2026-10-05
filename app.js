@@ -122,7 +122,7 @@ function enterRead(){
   $("#searchBox").value = "";
   $("#crumbs").textContent = `القسم: ${bookSection(state.book)} › الكتاب: ${state.book} › الشرح: ${state.sharh}`;
   $("#readHint").textContent = "نقرة واحدة = تعليم كمقروء • نقرتان سريعتان على المسألة = عرض شرحها كاملًا";
-  renderPages(); save(); updateResume();
+  renderPages(); save();
 }
 function filteredPages(){
   const D = cur();
@@ -147,7 +147,7 @@ function renderPages(){
   const D = cur();
   const done = D.flat.filter(m=>+localStorage.getItem(doneKey(m.id))).length;
   $("#progressBar").style.width = (done/D.flat.length*100)+"%";
-  save(); updateResume();
+  save();
 }
 // نقرة واحدة = تعليم كمقروء | نقرتان سريعتان (فأرة أو لمس) = نافذة الشرح
 function attachPress(el){
@@ -197,31 +197,13 @@ $("#searchBox").oninput=()=>{state.page=1;renderPages();};
 $("#mPrev").onclick=()=>{ if(state.masala>1) openPopup(state.masala-1); };
 $("#mNext").onclick=()=>{ const D=cur(); if(state.masala<D.flat.length) openPopup(state.masala+1); };
 
-// متابعة
-function updateResume(){
-  const s = load();
-  const btn = $("#resumeBtn");
-  if(s&&s.page&&(s.book)){
-    btn.classList.remove("hidden");
-    btn.textContent = `▶ متابعة: ${s.book} — صفحة ${s.page}${s.masala?" — مسألة "+s.masala:""}`;
-  } else btn.classList.add("hidden");
-}
-$("#resumeBtn").onclick=()=>{
-  const s=load(); if(!s) return;
-  state.book=s.book||"عمدة الفقه"; state.sharh=s.sharh||"شرح الشيخ صالح الفوزان";
-  state.section=s.section||({ "كتاب التوحيد":"aqida", "عمدة الأحكام":"hadith", "الآجرومية":"nahw", "متن الرحبية":"faraid", "عمدة الفقه":"fiqh", "زاد المستقنع":"fiqh" }[state.book]||"fiqh");
-  state.page=s.page||1; curBab="الكل";
-  enterRead(); go("view-read");
-  if(s.masala) openMasala(s.masala);
-};
-
 // init
 (function(){
   const s=load();
   state.zoom=s?.zoom||100; applyZoom();
   document.documentElement.dataset.theme=s?.theme||"light";
   $("#themeBtn").textContent=document.documentElement.dataset.theme==="dark"?"☀️ نهاري":"🌙 ليلي";
-  renderSections(); updateResume();
+  renderSections();
 })();
 
 // ============ الاختبار والمراجعة (تُبنى الأسئلة من نصوص الكتب فقط) ============
@@ -246,7 +228,6 @@ function fillBookSelect(sel, info, from, to){
   sel.onchange = upd; upd();
 }
 $("#quizBtn").onclick = ()=>{ fillBookSelect($("#qBook"), $("#qPagesInfo"), $("#qFrom"), $("#qTo")); go("view-quiz-setup"); };
-$("#reviewBtn").onclick = ()=>{ fillBookSelect($("#rBook"), $("#rPagesInfo"), $("#rFrom"), $("#rTo")); go("view-review-setup"); };
 
 // توليد الأسئلة من النصوص فقط: لا يُؤلَّف أي نص جديد
 function norm(s){ return (s||"").replace(/\s+/g," ").trim(); }
@@ -357,26 +338,3 @@ function checkQ(){
   $("#qNext").onclick = ()=>{ QZ.idx++; renderQ(); };
 }
 $("#qQuit").onclick = ()=>go("view-sections");
-
-// المراجعة السريعة: تقليب صفحات المتن فقط بلا شروح
-let RV = { pages:[], idx:0 };
-$("#rStart").onclick = ()=>{
-  const book = $("#rBook").value;
-  const D = bookData(book);
-  let from = Math.max(1, +$("#rFrom").value||1);
-  let to = Math.min(D.pages.length, +$("#rTo").value||1);
-  if(from>to) [from,to]=[to,from];
-  const pages = D.pages.filter(p=>p.id>=from && p.id<=to);
-  if(!pages.length){ alert("لا توجد صفحات في هذا النطاق."); return; }
-  RV = { pages, idx:0, book };
-  go("view-review-run"); renderR();
-};
-function renderR(){
-  const n = RV.pages.length;
-  const p = RV.pages[RV.idx];
-  $("#rInfo").textContent = `صفحة ${RV.idx+1} / ${n} — ${RV.book}`;
-  $("#rPage").innerHTML = `<div class="page"><h3>${p.bab}</h3>${p.masael.map(m=>`<div class="masala static"><span class="m-num">مسألة ${m.id}</span>${m.matn}</div>`).join("")}</div>`;
-  window.scrollTo({top:0});
-}
-$("#rPrev").onclick = ()=>{ if(RV.idx>0){ RV.idx--; renderR(); } };
-$("#rNext").onclick = ()=>{ if(RV.idx<RV.pages.length-1){ RV.idx++; renderR(); } };
