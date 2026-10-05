@@ -121,7 +121,7 @@ function enterRead(){
   $("#babSelect").value = curBab;
   $("#searchBox").value = "";
   $("#crumbs").textContent = `القسم: ${bookSection(state.book)} › الكتاب: ${state.book} › الشرح: ${state.sharh}`;
-  $("#readHint").textContent = "ضغطة سريعة = تعليم كمقروء • ضغطة مطوّلة على المسألة = عرض شرحها كاملًا";
+  $("#readHint").textContent = "نقرة واحدة = تعليم كمقروء • نقرتان سريعتان على المسألة = عرض شرحها كاملًا";
   renderPages(); save(); updateResume();
 }
 function filteredPages(){
@@ -149,16 +149,15 @@ function renderPages(){
   $("#progressBar").style.width = (done/D.flat.length*100)+"%";
   save(); updateResume();
 }
-// ضغطة سريعة = تعليم كمقروء فقط | ضغطة مطوّلة (600ms) = نافذة الشرح
+// نقرة واحدة = تعليم كمقروء | نقرتان سريعتان (فأرة أو لمس) = نافذة الشرح
 function attachPress(el){
-  let timer=null, longFired=false;
   const id = +el.dataset.m;
-  const start = e=>{ longFired=false; timer=setTimeout(()=>{ longFired=true; openPopup(id); },600); };
-  const cancel = ()=>{ clearTimeout(timer); };
-  el.addEventListener("pointerdown", start);
-  el.addEventListener("pointerup", e=>{ cancel(); if(!longFired) markMasala(id); });
-  el.addEventListener("pointerleave", cancel);
-  el.addEventListener("pointermove", cancel);
+  let lastTap = 0;
+  el.addEventListener("pointerup", ()=>{
+    const now = Date.now();
+    if(now - lastTap < 350){ lastTap = 0; openPopup(id); }
+    else { lastTap = now; markMasala(id); }
+  });
   el.addEventListener("contextmenu", e=>e.preventDefault());
 }
 function markMasala(id){
