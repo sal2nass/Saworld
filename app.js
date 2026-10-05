@@ -121,7 +121,7 @@ function enterRead(){
   $("#babSelect").value = curBab;
   $("#searchBox").value = "";
   $("#crumbs").textContent = `القسم: ${bookSection(state.book)} › الكتاب: ${state.book} › الشرح: ${state.sharh}`;
-  $("#readHint").textContent = "ضغطة سريعة = تعليم كمقروء • ضغطة مطوّلة على المسألة = عرض نصها ودليلها";
+  $("#readHint").textContent = "ضغطة سريعة = تعليم كمقروء • ضغطة مطوّلة على المسألة = عرض شرحها كاملًا";
   renderPages(); save(); updateResume();
 }
 function filteredPages(){
@@ -174,10 +174,9 @@ function openPopup(id){
   const m = D.flat.find(x=>x.id===id); if(!m) return;
   state.masala=id; localStorage.setItem(doneKey(id),"1");
   document.querySelectorAll(".masala").forEach(e=>e.classList.toggle("active",+e.dataset.m===id));
-  $("#mSrc").textContent = "الكتاب: " + state.book + " — الشرح المختار: " + state.sharh;
-  $("#mTitle").textContent = `مسألة ${m.id} — ${m.bab}`;
-  $("#mMatn").textContent = m.matn;
-  $("#mDalil").textContent = m.dalil;
+  $("#mSrc").textContent = state.sharh + " على " + state.book;
+  $("#mTitle").textContent = `شرح مسألة ${m.id} — ${m.bab}`;
+  $("#mText").textContent = m.sharh;
   $("#sharhModal").classList.remove("hidden");
   document.body.style.overflow = "hidden";
   renderPages0(); save();
