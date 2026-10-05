@@ -67,7 +67,8 @@
       </div>
     </div>
     <div class="breadcrumb" id="crumbs"></div>
-    <div class="read-layout">
+    <p class="muted hint" id="readHint"></p>
+    <div class="read-layout single">
       <div class="pages-col">
         <div class="pages-nav">
           <button id="prevPage">السابق</button>
@@ -76,28 +77,26 @@
         </div>
         <div id="pagesList"></div>
       </div>
-      <aside class="sharh-col" id="sharhPanel">
-        <div class="sharh-empty" id="sharhEmpty">
-          <div class="big">👈</div>
-          <h3>اضغط على أي مسألة من صفحات المتن</h3>
-          <p>سيظهر لك هنا نص المسألة من «عمدة الفقه» لابن قدامة، وتحته شرحها المستفاد من شرح الشيخ صالح الفوزان، مع الدليل والفائدة.</p>
-        </div>
-        <div class="sharh-body hidden" id="sharhBody">
-          <div class="sharh-src" id="sharhSrc">المصدر: اختر مسألة لعرض شرحها</div>
-          <h3 id="sharhMasalaTitle"></h3>
-          <blockquote id="sharhMatn"></blockquote>
-          <h4>الشرح</h4>
-          <div id="sharhText"></div>
-          <div class="dalil-box"><strong>الدليل:</strong> <span id="sharhDalil"></span></div>
-          <div class="faida-box"><strong>فائدة:</strong> <span id="sharhFaida"></span></div>
-          <div class="sharh-nav">
-            <button id="prevMasala">المسألة السابقة</button>
-            <button id="nextMasala">المسألة التالية</button>
-          </div>
-        </div>
-      </aside>
     </div>
   </section>
+
+<!-- نافذة الشرح المنبثقة (تظهر بالضغط المطوّل على المسألة) -->
+<div id="sharhModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <button id="modalClose" aria-label="إغلاق">×</button>
+    <div class="sharh-src" id="mSrc"></div>
+    <h3 id="mTitle"></h3>
+    <blockquote id="mMatn"></blockquote>
+    <h4>الشرح</h4>
+    <div id="mText"></div>
+    <div class="dalil-box"><strong>الدليل:</strong> <span id="mDalil"></span></div>
+    <div class="faida-box"><strong>فائدة:</strong> <span id="mFaida"></span></div>
+    <div class="sharh-nav">
+      <button id="mPrev">المسألة السابقة</button>
+      <button id="mNext">المسألة التالية</button>
+    </div>
+  </div>
+</div>
 
   <footer class="refs">
     <p class="muted">التقدم والتكبير ووضع الليل يُحفظ تلقائيًا في جهازك (LocalStorage) لمتابعة آخر ما وقفت عنده.</p>

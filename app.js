@@ -121,11 +121,7 @@ function enterRead(){
   $("#babSelect").value = curBab;
   $("#searchBox").value = "";
   $("#crumbs").textContent = `القسم: ${bookSection(state.book)} › الكتاب: ${state.book} › الشرح: ${state.sharh}`;
-  const srcEl = $("#sharhSrc");
-  if(srcEl) srcEl.textContent = "المصدر: " + state.sharh;
-  const emp = $("#sharhEmpty p");
-  if(emp) emp.textContent = `سيظهر لك هنا نص المسألة من «${state.book}»، وتحته شرحها المستفاد من ${state.sharh}، مع الدليل والفائدة.`;
-  $("#sharhEmpty").classList.remove("hidden"); $("#sharhBody").classList.add("hidden");
+  $("#readHint").textContent = "ضغطة سريعة = تعليم كمقروء • ضغطة مطوّلة على المسألة = عرض شرحها في نافذة منبثقة";
   renderPages(); save(); updateResume();
 }
 function filteredPages(){
@@ -147,26 +143,51 @@ function renderPages(){
       <h3>${p.kitab} — ${p.bab} <small class="muted">(ص ${p.id})</small></h3>
       ${p.masael.map(m=>`<div class="masala ${state.masala===m.id?"active":""}" data-m="${m.id}"><span class="m-num">مسألة ${m.id}</span>${m.matn}</div>`).join("")}
     </div>`).join("") || `<p class="muted">لا نتائج. جرّب كلمة أخرى.</p>`;
-  document.querySelectorAll(".masala").forEach(el=>el.onclick=()=>openMasala(+el.dataset.m));
+  document.querySelectorAll(".masala").forEach(el=>attachPress(el));
   const D = cur();
   const done = D.flat.filter(m=>+localStorage.getItem(doneKey(m.id))).length;
   $("#progressBar").style.width = (done/D.flat.length*100)+"%";
   save(); updateResume();
 }
-function openMasala(id){
+// ضغطة سريعة = تعليم كمقروء فقط | ضغطة مطوّلة (600ms) = نافذة الشرح
+function attachPress(el){
+  let timer=null, longFired=false;
+  const id = +el.dataset.m;
+  const start = e=>{ longFired=false; timer=setTimeout(()=>{ longFired=true; openPopup(id); },600); };
+  const cancel = ()=>{ clearTimeout(timer); };
+  el.addEventListener("pointerdown", start);
+  el.addEventListener("pointerup", e=>{ cancel(); if(!longFired) markMasala(id); });
+  el.addEventListener("pointerleave", cancel);
+  el.addEventListener("pointermove", cancel);
+  el.addEventListener("contextmenu", e=>e.preventDefault());
+}
+function markMasala(id){
+  const D = cur();
+  if(!D.flat.find(x=>x.id===id)) return;
+  state.masala=id; localStorage.setItem(doneKey(id),"1");
+  document.querySelectorAll(".masala").forEach(e=>e.classList.toggle("active",+e.dataset.m===id));
+  renderPages0(); save();
+}
+function openMasala(id){ markMasala(id); openPopup(id); }
+function openPopup(id){
   const D = cur();
   const m = D.flat.find(x=>x.id===id); if(!m) return;
   state.masala=id; localStorage.setItem(doneKey(id),"1");
   document.querySelectorAll(".masala").forEach(e=>e.classList.toggle("active",+e.dataset.m===id));
-  $("#sharhEmpty").classList.add("hidden"); $("#sharhBody").classList.remove("hidden");
-  $("#sharhMasalaTitle").textContent = `مسألة ${m.id} — ${m.bab}`;
-  $("#sharhMatn").textContent = m.matn;
-  $("#sharhText").textContent = m.sharh;
-  $("#sharhDalil").textContent = m.dalil;
-  $("#sharhFaida").textContent = m.faida;
-  if(window.innerWidth<900) $("#sharhPanel").scrollIntoView({behavior:"smooth"});
+  $("#mSrc").textContent = "المصدر: " + state.sharh + " — آخر الطبعات (الشاملة / تراث)";
+  $("#mTitle").textContent = `مسألة ${m.id} — ${m.bab}`;
+  $("#mMatn").textContent = m.matn;
+  $("#mText").textContent = m.sharh;
+  $("#mDalil").textContent = m.dalil;
+  $("#mFaida").textContent = m.faida;
+  $("#sharhModal").classList.remove("hidden");
+  document.body.style.overflow = "hidden";
   renderPages0(); save();
 }
+function closePopup(){ $("#sharhModal").classList.add("hidden"); document.body.style.overflow = ""; }
+$("#modalClose").onclick = closePopup;
+$("#sharhModal").addEventListener("click", e=>{ if(e.target.id==="sharhModal") closePopup(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closePopup(); });
 function renderPages0(){ // تحديث التظليل والتقدم دون إعادة بناء البحث
   const D = cur();
   const done = D.flat.filter(m=>+localStorage.getItem(doneKey(m.id))).length;
@@ -176,8 +197,8 @@ $("#prevPage").onclick=()=>{state.page--;renderPages();};
 $("#nextPage").onclick=()=>{state.page++;renderPages();};
 $("#babSelect").onchange=e=>{curBab=e.target.value;state.page=1;renderPages();};
 $("#searchBox").oninput=()=>{state.page=1;renderPages();};
-$("#prevMasala").onclick=()=>{ if(state.masala>1) openMasala(state.masala-1); };
-$("#nextMasala").onclick=()=>{ const D=cur(); if(state.masala<D.flat.length) openMasala(state.masala+1); };
+$("#mPrev").onclick=()=>{ if(state.masala>1) openPopup(state.masala-1); };
+$("#mNext").onclick=()=>{ const D=cur(); if(state.masala<D.flat.length) openPopup(state.masala+1); };
 
 // متابعة
 function updateResume(){

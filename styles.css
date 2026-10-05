@@ -40,6 +40,8 @@ main{max-width:1150px;margin:auto;padding:18px}
 .read-tools input,.read-tools select{padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-family:inherit;min-width:220px}
 .breadcrumb{margin:10px 0;color:var(--muted);font-size:.9rem}
 .read-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.read-layout.single{display:block;max-width:800px;margin:0 auto}
+.hint{background:var(--card);border:1px dashed var(--brand2);border-radius:10px;padding:6px 14px;font-size:.9rem}
 @media(max-width:900px){.read-layout{grid-template-columns:1fr}}
 .pages-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .page{background:var(--matn);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:14px;box-shadow:var(--shadow)}
@@ -48,11 +50,18 @@ main{max-width:1150px;margin:auto;padding:18px}
 .masala:hover{border-color:var(--brand);background:var(--sharh)}
 .masala.active{outline:2px solid var(--brand);background:var(--sharh)}
 .masala .m-num{font-family:"Tajawal";font-size:.75rem;background:var(--brand2);border-radius:12px;padding:0 8px;margin-left:6px;color:#222;font-weight:800}
-.sharh-col{position:sticky;top:90px;align-self:start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);max-height:calc(100vh - 120px);overflow:auto}
-@media(max-width:900px){.sharh-col{position:static;max-height:none}}
+.modal.hidden{display:none!important}
 .sharh-src{font-size:.78rem;background:var(--brand);color:#fff;border-radius:8px;padding:2px 10px;display:inline-block;margin-bottom:8px}
-.sharh-body blockquote{background:var(--matn);border-right:4px solid var(--brand);margin:10px 0;padding:10px 14px;border-radius:8px;font-family:"Amiri",serif}
-#sharhText{white-space:pre-line}
+.modal-box blockquote{background:var(--matn);border-right:4px solid var(--brand);margin:10px 0;padding:10px 14px;border-radius:8px;font-family:"Amiri",serif}
+#mText{white-space:pre-line}
+/* النافذة المنبثقة للشرح */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px;animation:fade .2s}
+.modal-box{position:relative;background:var(--card);color:var(--ink);border-radius:18px;max-width:640px;width:100%;max-height:88vh;overflow:auto;padding:22px 20px;box-shadow:0 12px 48px rgba(0,0,0,.35);border-top:5px solid var(--brand)}
+.modal-box h3{margin:.3em 0;color:var(--brand)}
+.modal-box h4{margin:.6em 0 .2em}
+#modalClose{position:absolute;top:10px;left:10px;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--brand);background:var(--card);color:var(--ink);font-size:1.3rem;cursor:pointer;line-height:1}
+#modalClose:hover{background:var(--brand);color:#fff}
+.masala{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:pan-y}
 .dalil-box,.faida-box{background:var(--sharh);border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px;font-size:.95rem}
 .sharh-nav{display:flex;justify-content:space-between;margin-top:12px}
 .sharh-empty{text-align:center;color:var(--muted)}.sharh-empty .big{font-size:2.4rem}
@@ -72,6 +81,7 @@ footer.refs{margin-top:26px;background:var(--card);border:1px solid var(--line);
   .read-tools input,.read-tools select{flex:1;min-width:0;width:100%;font-size:1rem;min-height:44px}
   .masala{font-size:1.12rem;padding:12px}
   .page{padding:12px}
-  .sharh-col{padding:14px}
-  #sharhText{font-size:1.05rem}
+  .modal{padding:8px}
+  .modal-box{padding:18px 14px}
+  #mText{font-size:1.05rem}
 }
