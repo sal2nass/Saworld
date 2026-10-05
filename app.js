@@ -174,7 +174,7 @@ function openPopup(id){
   const m = D.flat.find(x=>x.id===id); if(!m) return;
   state.masala=id; localStorage.setItem(doneKey(id),"1");
   document.querySelectorAll(".masala").forEach(e=>e.classList.toggle("active",+e.dataset.m===id));
-  $("#mSrc").textContent = "المصدر: " + state.sharh + " — آخر الطبعات (الشاملة / تراث)";
+  $("#mSrc").textContent = "شرح مختصر مستفاد من: " + state.sharh + " — آخر الطبعات (الشاملة / تراث)";
   $("#mTitle").textContent = `مسألة ${m.id} — ${m.bab}`;
   $("#mMatn").textContent = m.matn;
   $("#mText").textContent = m.sharh;
