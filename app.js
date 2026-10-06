@@ -172,8 +172,8 @@ function openPopup(id){
   state.masala=id; localStorage.setItem(doneKey(id),"1");
   document.querySelectorAll(".masala").forEach(e=>e.classList.toggle("active",+e.dataset.m===id));
   $("#mSrc").textContent = state.sharh + " على " + state.book;
-  $("#mTitle").textContent = `شرح مسألة ${m.id} — ${m.bab}`;
-  $("#mText").textContent = m.sharh;
+  $("#mTitle").textContent = m.sharh ? `شرح مسألة ${m.id} — ${m.bab}` : `مسألة ${m.id} — ${m.bab} (بانتظار الشرح)`;
+  $("#mText").textContent = m.sharh || m.matn;
   $("#sharhModal").classList.remove("hidden");
   document.body.style.overflow = "hidden";
   renderPages0(); save();
