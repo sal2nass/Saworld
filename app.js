@@ -1,42 +1,42 @@
 // منطق المنصة: أقسام -> كتب -> شروح -> قراءة صفحات + شرح المسألة + تكبير + دارك + متابعة
 const SECTIONS = [
-  { id:"aqida", name:"العقيدة", mark:"ع", desc:"التوحيد والإيمان والأسماء والصفات" },
-  { id:"hadith", name:"الحديث", mark:"ح", desc:"أحاديث الأحكام — ابدأ بعمدة الأحكام" },
-  { id:"nahw", name:"النحو", mark:"ن", desc:"قواعد الإعراب وبناء الجملة" },
-  { id:"sarf", name:"الصرف", mark:"ص", desc:"أبنية الكلمات وتصريف الأفعال" },
-  { id:"fiqh", name:"الفقه", mark:"ف", desc:"أحكام العبادات والمعاملات" },
-  { id:"faraid", name:"الفرائض", mark:"م", desc:"علم المواريث وقسمة التركات" },
+  { id:"aqida", name:"العقيدة" },
+  { id:"hadith", name:"الحديث" },
+  { id:"nahw", name:"النحو" },
+  { id:"sarf", name:"الصرف" },
+  { id:"fiqh", name:"الفقه" },
+  { id:"faraid", name:"الفرائض" },
 ];
 const BOOKS = {
-  aqida: [{t:"كتاب التوحيد", ok:true, desc:"للإمام محمد بن عبد الوهاب — كاملًا (66 بابًا) بفتح المجيد"},{t:"الأصول الثلاثة", ok:false},{t:"العقيدة الواسطية", ok:false}],
-  hadith: [{t:"عمدة الأحكام", ok:true, desc:"لعبد الغني المقدسي — أحاديث الطهارة بشرح البسام"},{t:"بلوغ المرام", ok:false},{t:"الأربعون النووية", ok:false}],
-  nahw: [{t:"الآجرومية", ok:true, desc:"لابن آجروم — بشرح الشيخ العثيمين للمبتدئين (متاح الآن)"},{t:"قطر الندى", ok:false}],
-  sarf: [{t:"نظم المقصود", ok:false},{t:"شذا العرف", ok:false}],
-  fiqh: [{t:"عمدة الفقه", ok:true, desc:"لابن قدامة — كتاب الطهارة والصلاة (متاح الآن)"},{t:"زاد المستقنع", ok:true, desc:"للحجاوي — كتاب الطهارة بشرح ابن عثيمين (الشرح الممتع)"},{t:"دليل الطالب", ok:false}],
-  faraid: [{t:"متن الرحبية", ok:true, desc:"منظومة الرحبي في الفرائض — بشرح الشيخ عبد المحسن القاسم"}],
+  aqida: [{t:"كتاب التوحيد", a:"محمد بن عبد الوهاب", ok:true},{t:"الأصول الثلاثة", a:"محمد بن عبد الوهاب", ok:false},{t:"العقيدة الواسطية", a:"ابن تيمية", ok:false}],
+  hadith: [{t:"عمدة الأحكام", a:"عبد الغني المقدسي", ok:true},{t:"بلوغ المرام", a:"ابن حجر العسقلاني", ok:false},{t:"الأربعون النووية", a:"يحيى النووي", ok:false}],
+  nahw: [{t:"الآجرومية", a:"ابن آجروم", ok:true},{t:"قطر الندى", a:"ابن هشام الأنصاري", ok:false}],
+  sarf: [{t:"نظم المقصود", a:"منظومة في علم الصرف", ok:false},{t:"شذا العرف", a:"أحمد الحملاوي", ok:false}],
+  fiqh: [{t:"عمدة الفقه", a:"ابن قدامة المقدسي", ok:true},{t:"زاد المستقنع", a:"موسى الحجاوي", ok:true},{t:"دليل الطالب", a:"مرعي الكرمي", ok:false}],
+  faraid: [{t:"متن الرحبية", a:"محمد الرحبي", ok:true}],
 };
 const SHURUH = {
   "عمدة الفقه": [
-    {t:"شرح الشيخ صالح الفوزان", ok:true, desc:"المعتمد حاليًا — مهذب من الدروس الصوتية والطبعة الأخيرة"},
-    {t:"شرح الشيخ ابن عثيمين", ok:false},
-    {t:"شرح الشيخ عبدالله البسام", ok:false},
+    {t:"شرح الشيخ صالح الفوزان", a:"صالح بن فوزان الفوزان", ok:true},
+    {t:"شرح الشيخ ابن عثيمين", a:"محمد بن صالح العثيمين", ok:false},
+    {t:"شرح الشيخ عبدالله البسام", a:"عبد الله البسام", ok:false},
   ],
   "كتاب التوحيد": [
-    {t:"فتح المجيد شرح كتاب التوحيد", ok:true, desc:"للشيخ عبد الرحمن بن حسن آل الشيخ — تحقيق الفريان، آخر الطبعات"},
-    {t:"شرح الشيخ صالح الفوزان (إعانة المستفيد)", ok:false},
+    {t:"فتح المجيد شرح كتاب التوحيد", a:"عبد الرحمن بن حسن آل الشيخ", ok:true},
+    {t:"شرح الشيخ صالح الفوزان (إعانة المستفيد)", a:"صالح بن فوزان الفوزان", ok:false},
   ],
   "الآجرومية": [
-    {t:"شرح الشيخ محمد بن صالح العثيمين", ok:true, desc:"الأنسب للمبتدئ: عبارة سهلة وأمثلة متدرجة وتمارين"},
-    {t:"شرح الكفراوي", ok:false},
+    {t:"شرح الشيخ محمد بن صالح العثيمين", a:"محمد بن صالح العثيمين", ok:true},
+    {t:"شرح الكفراوي", a:"حسن الكفراوي", ok:false},
   ],
   "متن الرحبية": [
-    {t:"شرح الشيخ عبد المحسن القاسم", ok:true, desc:"شرح ميسر على المنظومة — آخر الطبعات"},
+    {t:"شرح الشيخ عبد المحسن القاسم", a:"عبد المحسن بن محمد القاسم", ok:true},
   ],
   "زاد المستقنع": [
-    {t:"الشرح الممتع للشيخ ابن عثيمين", ok:true, desc:"أوسع شروح الزاد وأيسرها — آخر الطبعات"},
+    {t:"الشرح الممتع للشيخ ابن عثيمين", a:"محمد بن صالح العثيمين", ok:true},
   ],
   "عمدة الأحكام": [
-    {t:"تيسير العلام للشيخ عبد الله البسام", ok:true, desc:"شرح مختصر مفيد على أحاديث الأحكام — آخر الطبعات"},
+    {t:"تيسير العلام للشيخ عبد الله البسام", a:"عبد الله البسام", ok:true},
   ]
 };
 // سجل البيانات: اسم الكتاب -> كائن البيانات المحمّل من ملفات data/
@@ -76,10 +76,9 @@ $("#themeBtn").onclick = ()=>{
 function go(id){ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active")); $("#"+id).classList.add("active"); window.scrollTo({top:0}); }
 document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
 
-// أقسام
+// أقسام: اسم القسم فقط
 function renderSections(){
-  const avail = {aqida:"متاح: كتاب التوحيد", hadith:"متاح: عمدة الأحكام", nahw:"متاح: الآجرومية", fiqh:"متاح: عمدة الفقه + الزاد", faraid:"متاح: متن الرحبية"};
-  $("#sectionsGrid").innerHTML = SECTIONS.map(s=>`<div class="card" data-s="${s.id}"><div class="mark">${s.mark}</div><h3>${s.name}</h3><p class="muted">${s.desc}</p><span class="tag">${avail[s.id]||"قريبًا"}</span></div>`).join("");
+  $("#sectionsGrid").innerHTML = SECTIONS.map(s=>`<div class="card sec" data-s="${s.id}"><h3>${s.name}</h3></div>`).join("");
   document.querySelectorAll("#sectionsGrid .card").forEach(c=>c.onclick=()=>{
     state.section=c.dataset.s; renderBooks(); go("view-books");
   });
@@ -88,18 +87,18 @@ function renderBooks(){
   const sec = SECTIONS.find(s=>s.id===state.section);
   $("#booksTitle").textContent = "كتب قسم: "+sec.name;
   const list = BOOKS[state.section]||[];
-  $("#booksGrid").innerHTML = list.map(b=>`<div class="card ${b.ok?"":"disabled"}" data-b="${b.t}"><h3>${b.t}</h3><p class="muted">${b.desc||"سيُضاف لاحقًا ضمن خطة المنصة"}</p>${b.ok?'<span class="tag">ادخل</span>':'<span class="soon">قريبًا</span>'}</div>`).join("");
-  document.querySelectorAll("#booksGrid .card").forEach(c=>c.onclick=()=>{
+  $("#booksGrid").innerHTML = `<div class="vlist">`+list.map(b=>`<div class="row ${b.ok?"":"disabled"}" data-b="${b.t}"><div><h3>${b.t}</h3><p class="muted">${b.a||""}</p></div>${b.ok?'<span class="tag">ادخل</span>':'<span class="soon">قريبًا</span>'}</div>`).join("")+`</div>`;
+  document.querySelectorAll("#booksGrid .row").forEach(c=>c.onclick=()=>{
     const b=(BOOKS[state.section]||[]).find(x=>x.t===c.dataset.b);
-    if(!b||!b.ok){ alert("هذا الكتاب سيُضاف لاحقًا. المتاح الآن: عمدة الفقه، الزاد، التوحيد، عمدة الأحكام، الآجرومية، الرحبية."); return; }
+    if(!b||!b.ok){ alert("هذا الكتاب سيُضاف لاحقًا."); return; }
     state.book=b.t; renderShuruh(); go("view-shuruh");
   });
 }
 function renderShuruh(){
   $("#shuruhTitle").textContent = "شروح كتاب: "+state.book;
   const list = SHURUH[state.book]||[];
-  $("#shuruhGrid").innerHTML = list.map(s=>`<div class="card ${s.ok?"":"disabled"}" data-s="${s.t}"><h3>${s.t}</h3><p class="muted">${s.desc||"سيُضاف لاحقًا"}</p>${s.ok?'<span class="tag">اختر وابدأ القراءة</span>':'<span class="soon">قريبًا</span>'}</div>`).join("");
-  document.querySelectorAll("#shuruhGrid .card").forEach(c=>c.onclick=()=>{
+  $("#shuruhGrid").innerHTML = `<div class="vlist">`+list.map(s=>`<div class="row ${s.ok?"":"disabled"}" data-s="${s.t}"><div><h3>${s.t}</h3><p class="muted">${s.a||""}</p></div>${s.ok?'<span class="tag">اختر وابدأ</span>':'<span class="soon">قريبًا</span>'}</div>`).join("")+`</div>`;
+  document.querySelectorAll("#shuruhGrid .row").forEach(c=>c.onclick=()=>{
     const s=(SHURUH[state.book]||[]).find(x=>x.t===c.dataset.s);
     if(!s||!s.ok){ alert("هذا الشرح سيُضاف لاحقًا."); return; }
     state.sharh=s.t; state.page=1; state.masala=null; enterRead(); go("view-read");
@@ -114,7 +113,7 @@ function doneKey(id){ return "done-"+state.book+"-"+id; }
 function enterRead(){
   const D = cur();
   $("#readTitle").textContent = state.book+" — "+state.sharh;
-  $("#readSub").textContent = D.author+" | المرجع: الشاملة / تراث — آخر الطبعات";
+  $("#readSub").textContent = D.author;
   const babs = ["الكل", ...new Set(D.pages.map(p=>p.bab))];
   const keep = babs.includes(curBab)?curBab:"الكل"; curBab = keep;
   $("#babSelect").innerHTML = babs.map(b=>`<option>${b}</option>`).join("");
@@ -284,7 +283,7 @@ $("#qStart").onclick = ()=>{
   let from = Math.max(1, +$("#qFrom").value||1);
   let to = Math.min(D.pages.length, +$("#qTo").value||1);
   if(from>to) [from,to]=[to,from];
-  const list = buildQuiz(book, from, to, qChoice("qtype"), +qChoice("qper"));
+  const list = buildQuiz(book, from, to, qChoice("qtype")||"mixed", +qChoice("qper")||1);
   if(!list.length){ alert("لا توجد مسائل في هذا النطاق."); return; }
   QZ = { list, idx:0, score:0, locked:false, book };
   go("view-quiz-run"); renderQ();
